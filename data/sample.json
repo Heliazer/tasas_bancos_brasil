@@ -1,0 +1,33 @@
+[
+  {
+    "banco": "Banco Ejemplo A",
+    "producto": "Plazo Fijo",
+    "tipo_tasa": "TNA",
+    "tasa": 75.5,
+    "plazo": "30 días",
+    "moneda": "ARS",
+    "url": "https://bancoejemploa.com/tasas",
+    "actualizado": "2025-09-20"
+  },
+  {
+    "banco": "Banco Ejemplo B",
+    "producto": "Caja de Ahorro",
+    "tipo_tasa": "TEA",
+    "tasa": 12.3,
+    "plazo": "—",
+    "moneda": "USD",
+    "url": "https://bancoejemplob.com/productos",
+    "actualizado": "2025-09-18"
+  },
+  {
+    "banco": "Banco Ejemplo C",
+    "producto": "Plazo Fijo UVA",
+    "tipo_tasa": "TNA",
+    "tasa": 95.0,
+    "plazo": "90 días",
+    "moneda": "ARS",
+    "url": "https://bancoejemploc.com/uva",
+    "actualizado": "2025-09-22"
+  }
+]
+

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tasas Brasil — Dashboard</title>
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <header class="container">
+      <h1>Tasas Brasil — Dashboard</h1>
+      <p class="subtitle">Visualización interactiva de <code>data/bancos.json</code></p>
+    </header>
+
+    <section class="container filters">
+      <div class="filter-group">
+        <label for="search">Buscar</label>
+        <input id="search" type="search" placeholder="banco, producto, plazo…" />
+      </div>
+      <div class="filter-group">
+        <label for="bank">Banco</label>
+        <select id="bank">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="minRate">Tasa mínima (%)</label>
+        <input id="minRate" type="number" step="0.01" min="0" placeholder="0" />
+      </div>
+      <div class="filter-group">
+        <label for="tipoTasa">Tipo de tasa</label>
+        <select id="tipoTasa">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <button id="reset" class="btn">Limpiar filtros</button>
+    </section>
+
+    <section class="container grid">
+      <div class="card">
+        <div class="metric" id="metric-count">0</div>
+        <div class="label">Registros</div>
+      </div>
+      <div class="card">
+        <div class="metric" id="metric-banks">0</div>
+        <div class="label">Bancos únicos</div>
+      </div>
+      <div class="card">
+        <div class="metric" id="metric-avg">0%</div>
+        <div class="label">Tasa promedio (EA)</div>
+      </div>
+      <div class="card">
+        <div class="metric" id="metric-updated">—</div>
+        <div class="label">Última actualización</div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Top 10 tasas</h2>
+          <div class="panel-actions">
+            <label class="toggle"><input type="checkbox" id="groupByBank" /> Promedio por banco</label>
+          </div>
+        </div>
+        <div id="chart" class="chart"></div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Detalle</h2>
+          <div class="panel-actions small">Click en encabezados para ordenar</div>
+        </div>
+        <div class="table-wrap">
+          <table id="table">
+            <thead>
+              <tr>
+                <th data-key="banco">Banco</th>
+                <th data-key="producto">Producto</th>
+                <th data-key="tasa" class="num">Tasa (%)</th>
+                <th data-key="plazo">Plazo</th>
+                <th data-key="moneda">Moneda</th>
+                <th data-key="actualizado">Actualizado</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <footer class="container footer">
+      <span>Fuente por defecto: <code>data/bancos.json</code></span>
+      <span>Personaliza vía query: <code>?data=../data/bancos.json</code></span>
+      <span>Servidor local: <code>python3 -m http.server 8000</code></span>
+    </footer>
+
+    <script id="inline-data" type="application/json">[
+  {
+    "banco": "Banco Central do Brasil",
+    "producto": "Taxa SELIC",
+    "tipo_tasa": "EA",
+    "tasa": 15.0,
+    "plazo": "Diária",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.bcb.gov.br/controleinflacao/taxaselic"
+  },
+  {
+    "banco": "Banco Central do Brasil",
+    "producto": "Taxa CDI",
+    "tipo_tasa": "EA",
+    "tasa": 14.9,
+    "plazo": "Diária",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.bcb.gov.br"
+  },
+  {
+    "banco": "Genérico",
+    "producto": "CDB 100% CDI",
+    "tipo_tasa": "EA",
+    "tasa": 14.9,
+    "plazo": "Variado",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.comparador.com.br/cdb"
+  },
+  {
+    "banco": "Genérico",
+    "producto": "CDB 110% CDI",
+    "tipo_tasa": "EA",
+    "tasa": 16.39,
+    "plazo": "Variado",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.comparador.com.br/cdb"
+  },
+  {
+    "banco": "Genérico",
+    "producto": "CDB 120% CDI",
+    "tipo_tasa": "EA",
+    "tasa": 17.88,
+    "plazo": "Variado",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.comparador.com.br/cdb"
+  },
+  {
+    "banco": "Genérico",
+    "producto": "CDB 130% CDI",
+    "tipo_tasa": "EA",
+    "tasa": 19.37,
+    "plazo": "Variado",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.comparador.com.br/cdb"
+  },
+  {
+    "banco": "Genérico",
+    "producto": "CDB 150% CDI",
+    "tipo_tasa": "EA",
+    "tasa": 22.35,
+    "plazo": "Variado",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.comparador.com.br/cdb"
+  },
+  {
+    "banco": "Banco Master",
+    "producto": "CDB 140% CDI",
+    "tipo_tasa": "EA",
+    "tasa": 20.86,
+    "plazo": "Variado",
+    "moneda": "BRL",
+    "actualizado": "2025-01-01",
+    "url": "https://www.bancomaster.com.br"
+  },
+  {
+    "banco": "Genérico",
+    "produto": "CDB Pré-fixado",
+    "tipo_tasa": "EA",
+    "tasa": 13.5,
+    "plazo": "Variado",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.comparador.com.br/cdb-pre"
+  },
+  {
+    "banco": "Banco de Brasília (BRB)",
+    "producto": "LCI Pós-fixada 95% CDI",
+    "tipo_tasa": "EA",
+    "tasa": 14.16,
+    "plazo": "1 ano",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.brb.com.br/lci"
+  },
+  {
+    "banco": "Banco ABC Brasil",
+    "producto": "LCI Pré-fixada",
+    "tipo_tasa": "EA",
+    "tasa": 13.17,
+    "plazo": "1 ano",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.abcbrasil.com.br/lci"
+  },
+  {
+    "banco": "Banco ABC Brasil",
+    "producto": "LCA Híbrida IPCA + 5.81%",
+    "tipo_tasa": "EA",
+    "tasa": 5.81,
+    "plazo": "1 ano",
+    "moneda": "BRL",
+    "actualizado": "2025-08-01",
+    "url": "https://www.abcbrasil.com.br/lca"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro Prefixado 2028",
+    "tipo_tasa": "EA",
+    "tasa": 13.28,
+    "plazo": "2028",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro Prefixado 2032",
+    "tipo_tasa": "EA",
+    "tasa": 13.82,
+    "plazo": "2032",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro SELIC 2028",
+    "tipo_tasa": "EA",
+    "tasa": 15.05,
+    "plazo": "2028",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro SELIC 2031",
+    "tipo_tasa": "EA",
+    "tasa": 15.11,
+    "plazo": "2031",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro IPCA+ 2029",
+    "tipo_tasa": "EA",
+    "tasa": 7.79,
+    "plazo": "2029",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro IPCA+ 2040",
+    "tipo_tasa": "EA",
+    "tasa": 7.28,
+    "plazo": "2040",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro IPCA+ 2050",
+    "tipo_tasa": "EA",
+    "tasa": 7.09,
+    "plazo": "2050",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro IPCA+ Juros Semestrais 2035",
+    "tipo_tasa": "EA",
+    "tasa": 7.58,
+    "plazo": "2035",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro Educa+ 2026",
+    "tipo_tasa": "EA",
+    "tasa": 8.06,
+    "plazo": "2026",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "Tesouro Nacional",
+    "producto": "Tesouro Renda+ 2065",
+    "tipo_tasa": "EA",
+    "tasa": 7.14,
+    "plazo": "2065",
+    "moneda": "BRL",
+    "actualizado": "2025-09-01",
+    "url": "https://www.tesourodireto.com.br"
+  },
+  {
+    "banco": "FIVN11",
+    "producto": "VIDA NOVA FII",
+    "tipo_tasa": "EA",
+    "tasa": 164.52,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "FVPQ11",
+    "producto": "VIA PARQUE SHOPPING FII",
+    "tipo_tasa": "EA",
+    "tasa": 87.09,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "HCTR11",
+    "producto": "HECTARE CE FII",
+    "tipo_tasa": "EA",
+    "tasa": 42.79,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "SARE11",
+    "producto": "SANTANDER RENDA DE ALUGUÉIS FII",
+    "tipo_tasa": "EA",
+    "tasa": 36.32,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "RBRL11",
+    "producto": "RBR LOG FII",
+    "tipo_tasa": "EA",
+    "tasa": 35.62,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "PATL11",
+    "producto": "PÁTRIA LOGÍSTICA FII",
+    "tipo_tasa": "EA",
+    "tasa": 34.62,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "RELG11",
+    "producto": "REC LOGÍSTICA FII",
+    "tipo_tasa": "EA",
+    "tasa": 34.54,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "BROF11",
+    "producto": "BRPR CORPORATE OFFICES FII",
+    "tipo_tasa": "EA",
+    "tasa": 34.38,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "VGRI11",
+    "producto": "VALORA RENDA IMOBILIÁRIA FII",
+    "tipo_tasa": "EA",
+    "tasa": 32.52,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "BLMG11",
+    "producto": "BLUEMACAW LOGÍSTICA FII",
+    "tipo_tasa": "EA",
+    "tasa": 32.45,
+    "plazo": "Variável",
+    "moneda": "BRL",
+    "actualizado": "2025-08-31",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "SNLG11",
+    "producto": "SUNO LOG FII (DY)",
+    "tipo_tasa": "EA",
+    "tasa": 152.0,
+    "plazo": "Dividend Yield",
+    "moneda": "BRL",
+    "actualizado": "2025-06-30",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "GZIT11",
+    "producto": "GAZIT MALLS FII (DY)",
+    "tipo_tasa": "EA",
+    "tasa": 10.17,
+    "plazo": "Dividend Yield",
+    "moneda": "BRL",
+    "actualizado": "2025-06-30",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "HCTR11",
+    "producto": "HECTARE CE FII (DY)",
+    "tipo_tasa": "EA",
+    "tasa": 9.56,
+    "plazo": "Dividend Yield",
+    "moneda": "BRL",
+    "actualizado": "2025-06-30",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "RZAK11",
+    "producto": "RIZA AKIN FII (DY)",
+    "tipo_tasa": "EA",
+    "tasa": 9.43,
+    "plazo": "Dividend Yield",
+    "moneda": "BRL",
+    "actualizado": "2025-06-30",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  },
+  {
+    "banco": "IBCR11",
+    "producto": "CRI INTEGRAL BREI FII (DY)",
+    "tipo_tasa": "EA",
+    "tasa": 9.19,
+    "plazo": "Dividend Yield",
+    "moneda": "BRL",
+    "actualizado": "2025-06-30",
+    "url": "https://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimento/fii/"
+  }
+]</script>
+    <script src="assets/app.js"></script>
+  </body>
+  </html>
