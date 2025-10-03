@@ -1,0 +1,111 @@
+¡Vamos a destripar tu repo como quien abre un reloj para ver cómo late! 🛠️⏱️
+
+## Qué hay hoy en `tasas_bancos_brasil`
+
+* Es **público** y vive en GitHub bajo tu usuario **Heliazer**. Tiene tres carpetas visibles en la raíz: `.claude/`, `docs/` y `simulador-factoring/`. ([GitHub][1])
+* El código es **casi todo TypeScript (~96%)**, con un poquito de CSS, JS y HTML. Buena señal para mantener tipos y no vivir al borde del abismo. ([GitHub][1])
+* Hay un enlace a un deploy en Vercel (`tasas-bancos-brasil.vercel.app`), pero ahora mismo responde 404; o sea, no hay build activo o el proyecto no está apuntando bien. ([GitHub][1])
+
+## Lo que ya detectamos por consola
+
+Del hilo que veníamos trabajando: el proyecto usa **Vite 7 + @vitejs/plugin-react 5**, que **exige Node ≥ 20.19 o ≥ 22.12**; estabas en Node 18 y por eso te tiraba `EBADENGINE`. Eso explica tus warnings al instalar. Te recomendé NVM y ya lo tenés andando, así que ✔️ con eso.
+
+## Revisión técnica y mejoras concretas
+
+Te dejo una checklist corta y accionable para dejar esto prolijo y “deploy-ready”:
+
+1. **Fijar la versión de Node del proyecto**
+   Crea un `.nvmrc` en la raíz del repo (o al menos dentro de `simulador-factoring/`) con:
+
+   ```
+   20.19.0
+   ```
+
+   Así cualquiera que clone hace `nvm use` y no pisa minas.
+
+2. **Scripts de Vite pensados para servidor remoto**
+   En `package.json` (dentro de `simulador-factoring/`), asegurate de que `"dev"` NO intente abrir navegador y escuche en todas las interfaces:
+
+   ```json
+   {
+     "scripts": {
+       "dev": "vite --host 0.0.0.0 --port 5173",
+       "build": "vite build",
+       "preview": "vite preview --host 0.0.0.0 --port 4173"
+     }
+   }
+   ```
+
+   Así evitás el error Qt/X11 y lo ves desde tu máquina por `http://IP:5173`.
+
+3. **README mínimo y reproducible**
+   Ahora mismo desde GitHub no se ve guía de arranque dentro del directorio de la app. Agregá un `README.md` en `simulador-factoring/` con:
+
+   * Requisitos: Node 20.19 (o 22.12), npm/pnpm
+   * Setup: `npm ci` (o `npm install`)
+   * Dev: `npm run dev` (y cómo acceder)
+   * Build: `npm run build`
+   * Preview: `npm run preview`
+
+4. **ESLint + Prettier + EditorConfig**
+   Añadí `.eslintrc.cjs`, `.prettierrc` y `.editorconfig` para que el código no se “despeine”. Si querés te paso configs base en el próximo mensaje.
+
+5. **Variables de entorno**
+   Si la app consume APIs (tasas, bancos, etc.), define un `.env.example` con las claves que se esperan (sin valores sensibles) y usa `import.meta.env`.
+
+6. **CI sencillo**
+   Un workflow de GitHub Actions que instale Node 20, haga `npm ci`, `npm run build` y lance `eslint` te evita romper la main branch:
+
+   ```yaml
+   name: ci
+   on: [push, pull_request]
+   jobs:
+     build:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v4
+         - uses: actions/setup-node@v4
+           with: { node-version: '20.19.0', cache: 'npm', cache-dependency-path: simulador-factoring/package-lock.json }
+         - run: cd simulador-factoring && npm ci && npm run build && npm run lint --if-present
+   ```
+
+7. **Deploy**
+
+   * **Vercel**: el enlace existe pero falla (404). Revisa que el **root del proyecto** en Vercel sea `simulador-factoring`, y que el **build command** sea `npm run build` y el **output** sea `dist`. También fija la versión de Node en “Environment → Node.js Version” a 20.
+   * **Alternativa**: Nginx sirviendo `dist/` (más barato en VPS). Te paso el bloque de server si te interesa.
+
+8. **Seguridad y mantenimiento**
+
+   * Activa **Dependabot** para npm updates semanales.
+   * Añade `@types/node` si no está, y bloquea versiones mayores de Vite/React si no querés sorpresas (semver “~” o “^” con cabeza).
+
+## Cómo lo corro ahora mismo (en tu VPS o local)
+
+1. Node correcto: `nvm use 20.19.0`
+2. Instalar deps:
+
+```bash
+cd simulador-factoring
+npm ci
+```
+
+3. Dev server:
+
+```bash
+npm run dev
+```
+
+* Desde tu PC: `http://<IP_DEL_VPS>:5173`
+  (o haz un túnel: `ssh -L 5173:127.0.0.1:5173 usuario@IP` y abre `http://localhost:5173`)
+
+## Qué miraría en una segunda ronda (cuando subas más commits)
+
+* Arquitectura de estado (¿Zustand/Redux/Context?) y separación de lógica/ UI.
+* Tipado de API responses y control de errores.
+* Tests mínimos (Vitest + Testing Library).
+* Accesibilidad (roles ARIA, foco, contraste).
+* i18n si planeás varios países (Brasil hoy, ¿Argentina mañana?).
+
+Si querés, en el próximo paso te dejo un PR “starter kit” con `.nvmrc`, scripts de Vite, README, ESLint/Prettier y un workflow de CI listos para pegar.
+
+[1]: https://github.com/Heliazer/tasas_bancos_brasil "GitHub - Heliazer/tasas_bancos_brasil"

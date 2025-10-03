@@ -107,20 +107,12 @@ export class SimulateFactoringUseCase {
   }
 
   private validateInput(input: SimulationInputDTO): void {
-    if (!input.duplicataNumber) {
-      throw new DomainException('El número de duplicata es requerido');
-    }
-
     if (input.faceValue <= 0) {
       throw new DomainException('El valor nominal debe ser mayor a cero');
     }
 
-    if (!input.debtorDocument) {
-      throw new DomainException('El CNPJ del deudor es requerido');
-    }
-
-    if (!input.creditorDocument) {
-      throw new DomainException('El CNPJ del acreedor es requerido');
+    if (!input.dueDate) {
+      throw new DomainException('La fecha de vencimiento es requerida');
     }
   }
 

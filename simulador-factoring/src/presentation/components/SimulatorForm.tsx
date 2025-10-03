@@ -5,7 +5,6 @@ import { FactoringModality } from '../../domain/enums/FactoringModality';
 import { RiskProfile } from '../../domain/enums/RiskProfile';
 import { CreditRating } from '../../domain/enums/CreditRating';
 import { TaxRegime } from '../../domain/enums/TaxRegime';
-import { formatCNPJ } from '../../utils/formatters';
 
 interface SimulatorFormProps {
   onSubmit: (input: SimulationInputDTO) => void;
@@ -14,14 +13,14 @@ interface SimulatorFormProps {
 
 export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProps) {
   const [formData, setFormData] = useState<SimulationInputDTO>({
-    duplicataNumber: '',
+    duplicataNumber: 'SIM-' + Date.now(),
     issueDate: new Date().toISOString().split('T')[0],
     dueDate: '',
     faceValue: 0,
-    debtorName: '',
+    debtorName: 'Simulación',
     debtorDocument: '',
     debtorCreditRating: CreditRating.A,
-    creditorName: '',
+    creditorName: 'Simulación',
     creditorDocument: '',
     economicSector: EconomicSector.SERVICES,
     modality: FactoringModality.WITH_RECOURSE,
@@ -44,14 +43,6 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
     }
   };
 
-  const handleCNPJChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const formatted = formatCNPJ(value);
-    setFormData((prev) => ({ ...prev, [name]: formatted }));
-    if (errors[name as keyof SimulationInputDTO]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
-  };
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,10 +56,6 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof SimulationInputDTO, string>> = {};
 
-    if (!formData.duplicataNumber) {
-      newErrors.duplicataNumber = 'Número de duplicata es requerido';
-    }
-
     if (!formData.dueDate) {
       newErrors.dueDate = 'Fecha de vencimiento es requerida';
     }
@@ -76,8 +63,6 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
     if (formData.faceValue <= 0) {
       newErrors.faceValue = 'Valor nominal debe ser mayor a cero';
     }
-
-    // Debtor and Creditor fields are optional (no validation)
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -91,27 +76,13 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Información de la Duplicata */}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Parámetros de la Operación */}
       <div className="card">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Información de la Duplicata</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="duplicataNumber" className="label">
-              Número de Duplicata *
-            </label>
-            <input
-              type="text"
-              id="duplicataNumber"
-              name="duplicataNumber"
-              value={formData.duplicataNumber}
-              onChange={handleInputChange}
-              className="input-field"
-              placeholder="DUP-2025-001"
-            />
-            {errors.duplicataNumber && <p className="error-text">{errors.duplicataNumber}</p>}
-          </div>
+        <h2 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b-2 border-slate-800 pb-2">Parámetros de la Simulación</h2>
 
+        {/* Valor y Plazo */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label htmlFor="faceValue" className="label">
               Valor Nominal (R$) *
@@ -127,22 +98,10 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               step="0.01"
               min="0"
             />
+            <p className="text-xs text-slate-600 mt-1 italic">
+              Monto total de la duplicata a factorizar
+            </p>
             {errors.faceValue && <p className="error-text">{errors.faceValue}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="issueDate" className="label">
-              Fecha de Emisión *
-            </label>
-            <input
-              type="date"
-              id="issueDate"
-              name="issueDate"
-              value={formData.issueDate}
-              onChange={handleInputChange}
-              className="input-field"
-            />
-            {errors.issueDate && <p className="error-text">{errors.issueDate}</p>}
           </div>
 
           <div>
@@ -157,118 +116,16 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               onChange={handleInputChange}
               className="input-field"
             />
+            <p className="text-xs text-slate-600 mt-1 italic">
+              Define el plazo de la operación (en días)
+            </p>
             {errors.dueDate && <p className="error-text">{errors.dueDate}</p>}
           </div>
         </div>
-      </div>
 
-      {/* Información del Deudor (Sacado) */}
-      <div className="card">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
-          Información del Deudor (Sacado) <span className="text-sm text-gray-500 font-normal">(Opcional)</span>
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="debtorName" className="label">
-              Nombre del Deudor
-            </label>
-            <input
-              type="text"
-              id="debtorName"
-              name="debtorName"
-              value={formData.debtorName}
-              onChange={handleInputChange}
-              className="input-field"
-              placeholder="Empresa Compradora Ltda"
-            />
-            {errors.debtorName && <p className="error-text">{errors.debtorName}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="debtorDocument" className="label">
-              CNPJ del Deudor
-            </label>
-            <input
-              type="text"
-              id="debtorDocument"
-              name="debtorDocument"
-              value={formData.debtorDocument}
-              onChange={handleCNPJChange}
-              className="input-field"
-              placeholder="00.000.000/0000-00"
-              maxLength={18}
-            />
-            {errors.debtorDocument && <p className="error-text">{errors.debtorDocument}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="debtorCreditRating" className="label">
-              Calificación de Crédito del Deudor
-            </label>
-            <select
-              id="debtorCreditRating"
-              name="debtorCreditRating"
-              value={formData.debtorCreditRating}
-              onChange={handleInputChange}
-              className="input-field"
-            >
-              <option value={CreditRating.AAA}>AAA - Excelente</option>
-              <option value={CreditRating.AA}>AA - Muy Bueno</option>
-              <option value={CreditRating.A}>A - Bueno</option>
-              <option value={CreditRating.BBB}>BBB - Regular</option>
-              <option value={CreditRating.BB}>BB - Moderado</option>
-              <option value={CreditRating.B}>B - Alto Riesgo</option>
-              <option value={CreditRating.CCC}>CCC - Muy Alto Riesgo</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Información del Acreedor (Cedente) */}
-      <div className="card">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
-          Información del Acreedor (Cedente) <span className="text-sm text-gray-500 font-normal">(Opcional)</span>
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="creditorName" className="label">
-              Nombre del Acreedor
-            </label>
-            <input
-              type="text"
-              id="creditorName"
-              name="creditorName"
-              value={formData.creditorName}
-              onChange={handleInputChange}
-              className="input-field"
-              placeholder="Empresa Vendedora Ltda"
-            />
-            {errors.creditorName && <p className="error-text">{errors.creditorName}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="creditorDocument" className="label">
-              CNPJ del Acreedor
-            </label>
-            <input
-              type="text"
-              id="creditorDocument"
-              name="creditorDocument"
-              value={formData.creditorDocument}
-              onChange={handleCNPJChange}
-              className="input-field"
-              placeholder="00.000.000/0000-00"
-              maxLength={18}
-            />
-            {errors.creditorDocument && <p className="error-text">{errors.creditorDocument}</p>}
-          </div>
-        </div>
-      </div>
-
-      {/* Parámetros de la Operación */}
-      <div className="card">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Parámetros de la Operación</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="border-t-2 border-slate-200 pt-6"></div>
+        {/* Parámetros de Riesgo y Operación */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="economicSector" className="label">
               Sector Económico *
@@ -289,6 +146,9 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               <option value={EconomicSector.TECHNOLOGY}>Tecnología</option>
               <option value={EconomicSector.OTHER}>Otro</option>
             </select>
+            <p className="text-xs text-slate-600 mt-1 italic">
+              Afecta la tasa base según riesgo sectorial
+            </p>
           </div>
 
           <div>
@@ -309,6 +169,9 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               <option value={FactoringModality.INTERNATIONAL}>Internacional</option>
               <option value={FactoringModality.RAW_MATERIAL}>Materia Prima</option>
             </select>
+            <p className="text-xs text-slate-600 mt-1 italic">
+              Define quién asume el riesgo y tipo de servicio
+            </p>
           </div>
 
           <div>
@@ -328,24 +191,32 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               <option value={RiskProfile.D}>D - Regular</option>
               <option value={RiskProfile.E}>E - Alto Riesgo</option>
             </select>
+            <p className="text-xs text-slate-600 mt-1 italic">
+              Evaluación crediticia que ajusta la tasa final
+            </p>
           </div>
 
           <div>
-            <label htmlFor="taxRegime" className="label">
-              Régimen Tributario *
+            <label htmlFor="debtorCreditRating" className="label">
+              Calificación del Deudor *
             </label>
             <select
-              id="taxRegime"
-              name="taxRegime"
-              value={formData.taxRegime}
+              id="debtorCreditRating"
+              name="debtorCreditRating"
+              value={formData.debtorCreditRating}
               onChange={handleInputChange}
               className="input-field"
-              disabled
             >
-              <option value={TaxRegime.LUCRO_REAL}>Lucro Real (Obligatorio)</option>
+              <option value={CreditRating.AAA}>AAA - Excelente</option>
+              <option value={CreditRating.AA}>AA - Muy Bueno</option>
+              <option value={CreditRating.A}>A - Bueno</option>
+              <option value={CreditRating.BBB}>BBB - Regular</option>
+              <option value={CreditRating.BB}>BB - Moderado</option>
+              <option value={CreditRating.B}>B - Alto Riesgo</option>
+              <option value={CreditRating.CCC}>CCC - Muy Alto Riesgo</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
-              Las empresas de factoring deben usar Lucro Real por ley (Lei 9.718/98)
+            <p className="text-xs text-slate-600 mt-1 italic">
+              Rating crediticio del sacado (pagador)
             </p>
           </div>
 
@@ -362,6 +233,28 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               className="input-field"
               placeholder="São Paulo"
             />
+            <p className="text-xs text-slate-600 mt-1 italic">
+              Define la alícuota del ISS (2% a 5%)
+            </p>
+          </div>
+
+          <div>
+            <label htmlFor="taxRegime" className="label">
+              Régimen Tributario
+            </label>
+            <select
+              id="taxRegime"
+              name="taxRegime"
+              value={formData.taxRegime}
+              onChange={handleInputChange}
+              className="input-field bg-slate-100"
+              disabled
+            >
+              <option value={TaxRegime.LUCRO_REAL}>Lucro Real (Obligatorio)</option>
+            </select>
+            <p className="text-xs text-slate-600 mt-1 italic">
+              Régimen obligatorio según Lei 9.718/98 Art. 14
+            </p>
           </div>
         </div>
       </div>
