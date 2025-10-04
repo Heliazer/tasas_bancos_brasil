@@ -5,15 +5,15 @@
 
 set -e
 
-VPS_HOST="${1:-usuario@IP_VPS}"
+VPS_HOST="${1:-heliazer@77.93.152.231}"
 VPS_PATH="/var/www/tasa-brasil"
 
-echo "🔨 Building application..."
+echo "Building application..."
 cd simulador-factoring
 npm run build
 
-echo "📦 Deploying to $VPS_HOST..."
+echo "Deploying to $VPS_HOST..."
 scp -r dist/* "$VPS_HOST:$VPS_PATH/"
 
-echo "✅ Deploy completado!"
-echo "🌐 Accede a: http://$(echo $VPS_HOST | cut -d'@' -f2)"
+echo "Deploy completado!"
+echo "Accede a: http://$(echo $VPS_HOST | cut -d'@' -f2)"
