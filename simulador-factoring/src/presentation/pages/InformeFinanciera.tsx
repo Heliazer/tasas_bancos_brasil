@@ -15,6 +15,9 @@ export function InformeFinanciera() {
   useEffect(() => {
     if (!simulationData) {
       navigate('/');
+    } else {
+      // Scroll to top when component loads
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [simulationData, navigate]);
 
@@ -22,41 +25,49 @@ export function InformeFinanciera() {
     return null;
   }
 
-  const { amount, months, finalAmount, totalGain, effectiveRate } = simulationData;
+  const { amount, months, totalGain, effectiveRate, fullOutput } = simulationData;
 
   // CÁLCULOS DESDE PERSPECTIVA DE LA FINANCIERA
+  // Si tenemos fullOutput, usar esos datos precisos. Si no, recalcular (fallback para compatibilidad)
 
   // 1. El cliente invierte/entrega este monto (valor nominal de la factura)
-  const valorNominalFactura = amount;
+  const valorNominalFactura = fullOutput?.faceValue || amount;
 
   // 2. Deságio (nuestra comisión bruta)
-  const tasaMensual = effectiveRate;
-  const plazoMeses = months / 30; // convertir días a meses aproximadamente
-  const tasaDesagio = tasaMensual * (months / 30);
-  const desagioBruto = valorNominalFactura * tasaDesagio;
+  const desagioBruto = fullOutput?.netCalculation.totalDesagio ||
+    (valorNominalFactura * effectiveRate * (months / 30));
 
   // 3. Impuestos sobre el deságio
-  const issRate = 0.03;
-  const pisRate = 0.0065;
-  const cofinsRate = 0.03;
-  const irpjRate = 0.32 * 0.15; // 15% sobre 32% lucro presumido
-  const csllRate = 0.32 * 0.09; // 9% sobre 32% lucro presumido
-
-  const issAmount = desagioBruto * issRate;
-  const pisAmount = desagioBruto * pisRate;
-  const cofinsAmount = desagioBruto * cofinsRate;
-  const irpjAmount = desagioBruto * irpjRate;
-  const csllAmount = desagioBruto * csllRate;
-  const totalImpuestos = issAmount + pisAmount + cofinsAmount + irpjAmount + csllAmount;
+  const issAmount = fullOutput?.taxCalculations.iss.amount || (desagioBruto * 0.03);
+  const pisAmount = fullOutput?.taxCalculations.pis.amount || (desagioBruto * 0.0065);
+  const cofinsAmount = fullOutput?.taxCalculations.cofins.amount || (desagioBruto * 0.03);
+  const irpjAmount = fullOutput?.taxCalculations.irpj.amount || (desagioBruto * 0.32 * 0.15);
+  const csllAmount = fullOutput?.taxCalculations.csll.amount || (desagioBruto * 0.32 * 0.09);
+  const totalImpuestos = fullOutput?.taxCalculations.totalTaxAmount ||
+    (issAmount + pisAmount + cofinsAmount + irpjAmount + csllAmount);
 
   // 4. Capital que adelantamos al cedente (empresa con la factura)
-  const capitalAdelantado = valorNominalFactura - desagioBruto;
+  const capitalAdelantado = fullOutput?.netCalculation.netAmount ||
+    (valorNominalFactura - desagioBruto);
 
   // 5. Ganancia neta de la financiera
-  const gananciaNeta = desagioBruto - totalImpuestos;
+  const gananciaNeta = totalGain || (desagioBruto - totalImpuestos);
 
   // 6. Al vencimiento cobramos la factura
   const montoRecuperadoAlVencimiento = valorNominalFactura;
+
+  // Variables para mostrar en el informe
+  const tasaMensual = fullOutput?.rateCalculation.effectiveMonthlyRate
+    ? (fullOutput.rateCalculation.effectiveMonthlyRate / 100)
+    : effectiveRate;
+  const tasaDesagio = desagioBruto / valorNominalFactura;
+
+  // Tasas de impuestos (para mostrar en tablas)
+  const issRate = fullOutput?.taxCalculations.iss.rate || 3.0;
+  const pisRate = fullOutput?.taxCalculations.pis.rate || 0.65;
+  const cofinsRate = fullOutput?.taxCalculations.cofins.rate || 3.0;
+  const irpjRate = fullOutput?.taxCalculations.irpj.rate || 4.8; // 15% sobre 32%
+  const csllRate = fullOutput?.taxCalculations.csll.rate || 2.88; // 9% sobre 32%
 
   // 7. ROI de la financiera
   const roiFinanciera = (gananciaNeta / capitalAdelantado) * 100;

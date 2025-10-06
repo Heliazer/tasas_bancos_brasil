@@ -19,7 +19,9 @@ export interface RateCalculationDTO {
   riskAdjustment: number;
   modalityAdjustment: number;
   volumeDiscount: number;
+  inflationAdjustment: number;
   finalMonthlyRate: number;
+  effectiveMonthlyRate: number;
   effectiveAnnualRate: number;
   desagioPercentage: number;
   desagioAmount: number;

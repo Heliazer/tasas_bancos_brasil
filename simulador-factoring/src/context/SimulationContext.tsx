@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
+import type { SimulationOutputDTO } from '../application/dtos/SimulationOutputDTO';
 
 interface SimulationData {
   amount: number;
@@ -9,6 +11,8 @@ interface SimulationData {
   roiPercentage: number;
   monthlyAverage: number;
   effectiveRate: number;
+  // Full simulation output for detailed reports
+  fullOutput?: SimulationOutputDTO;
 }
 
 interface SimulationContextType {

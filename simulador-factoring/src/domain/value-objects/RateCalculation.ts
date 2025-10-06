@@ -6,14 +6,17 @@ import { RiskProfile } from '../enums/RiskProfile';
 import { CreditRating } from '../enums/CreditRating';
 import { FactoringModality } from '../enums/FactoringModality';
 import { OperationVolume } from '../enums/OperationVolume';
+import { MacroeconomicDataService } from '../services/MacroeconomicDataService';
 
 export class RateCalculation {
   readonly baseMonthlyRate: Percentage;
   readonly riskAdjustment: Percentage;
   readonly modalityAdjustment: Percentage;
   readonly volumeDiscount: Percentage;
+  readonly inflationAdjustment: Percentage;
   readonly finalMonthlyRate: Percentage;
   readonly effectiveAnnualRate: Percentage;
+  readonly effectiveMonthlyRate: Percentage;
   readonly desagioPercentage: Percentage;
   readonly desagioAmount: Money;
 
@@ -42,6 +45,11 @@ export class RateCalculation {
     // Volume discount
     this.volumeDiscount = this.calculateVolumeDiscount(operationVolume);
 
+    // Calculate inflation adjustment based on current macroeconomic data
+    const macroData = MacroeconomicDataService.getCurrentData();
+    const inflationAdjustmentValue = MacroeconomicDataService.calculateInflationAdjustment(macroData.ipcaExpected12m);
+    this.inflationAdjustment = Percentage.fromPercentage(inflationAdjustmentValue);
+
     // Calculate final monthly rate
     let baseWithAdjustments = this.baseMonthlyRate.add(this.riskAdjustment);
 
@@ -52,8 +60,14 @@ export class RateCalculation {
       baseWithAdjustments = baseWithAdjustments.add(this.modalityAdjustment);
     }
 
+    // Add inflation adjustment
+    baseWithAdjustments = baseWithAdjustments.add(this.inflationAdjustment);
+
     const discountFactor = new Decimal(1).minus(this.volumeDiscount.toDecimal());
     this.finalMonthlyRate = baseWithAdjustments.multiply(discountFactor);
+
+    // Store effective monthly rate (same as final for now, but can be different in future)
+    this.effectiveMonthlyRate = this.finalMonthlyRate;
 
     // Convert to effective annual rate: (1 + r)^12 - 1
     const monthlyDecimal = this.finalMonthlyRate.toDecimal();

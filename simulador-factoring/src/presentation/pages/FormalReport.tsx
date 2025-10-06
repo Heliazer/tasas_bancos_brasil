@@ -15,6 +15,9 @@ export function FormalReport() {
     if (!simulationData) {
       // Si no hay datos, redirigir a landing
       navigate('/');
+    } else {
+      // Scroll to top when component loads
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [simulationData, navigate]);
 
@@ -30,11 +33,15 @@ export function FormalReport() {
     totalGain,
     roiPercentage,
     monthlyAverage,
-    effectiveRate
+    effectiveRate,
+    fullOutput
   } = simulationData;
 
   // Cálculos adicionales para el informe
-  const years = months / 12;
+  // IMPORTANTE: 'months' en el contexto contiene DÍAS, no meses
+  const daysToMaturity = months; // Renombrar para claridad
+  const monthsCount = daysToMaturity / 30;
+  const years = daysToMaturity / 365;
   const monthlyRate = effectiveRate * 100;
   const annualRate = ((Math.pow(1 + effectiveRate, 12) - 1) * 100);
 
@@ -122,7 +129,7 @@ export function FormalReport() {
               <div className="border-b border-slate-200 pb-2">
                 <p className="text-xs text-slate-600 uppercase tracking-wide mb-1">Plazo</p>
                 <p className="text-xl font-bold text-slate-900">
-                  {months} {months === 1 ? 'mes' : 'meses'} ({years.toFixed(1)} {years === 1 ? 'año' : 'años'})
+                  {daysToMaturity} días ({monthsCount.toFixed(1)} {monthsCount === 1 ? 'mes' : 'meses'})
                 </p>
               </div>
               <div className="border-b border-slate-200 pb-2">

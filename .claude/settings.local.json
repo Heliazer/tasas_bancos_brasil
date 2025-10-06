@@ -6,7 +6,8 @@
       "Bash(findstr:*)",
       "Bash(npm run dev:*)",
       "Bash(timeout 5 npm run dev)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []
