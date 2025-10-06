@@ -78,8 +78,24 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Parámetros de la Operación */}
-      <div className="card">
-        <h2 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b-2 border-slate-800 pb-2">Parámetros de la Simulación</h2>
+      <div className="card-elevated">
+        <div className="flex items-center gap-3 mb-6">
+          <div
+            className="rounded-lg p-2"
+            style={{
+              background: 'linear-gradient(135deg, #D4A017 0%, #FFDF00 100%)',
+              boxShadow: '0 4px 12px rgba(212, 160, 23, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+            }}
+          >
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold" style={{ color: '#2C3E50' }}>Parâmetros da Simulação</h2>
+            <p className="text-sm" style={{ color: '#546E7A' }}>Configure os detalhes da operação de factoring</p>
+          </div>
+        </div>
 
         {/* Valor y Plazo */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -98,7 +114,7 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               step="0.01"
               min="0"
             />
-            <p className="text-xs text-slate-600 mt-1 italic">
+            <p className="text-xs text-slate-500 mt-1.5">
               Monto total de la duplicata a factorizar
             </p>
             {errors.faceValue && <p className="error-text">{errors.faceValue}</p>}
@@ -116,14 +132,14 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               onChange={handleInputChange}
               className="input-field"
             />
-            <p className="text-xs text-slate-600 mt-1 italic">
+            <p className="text-xs text-slate-500 mt-1.5">
               Define el plazo de la operación (en días)
             </p>
             {errors.dueDate && <p className="error-text">{errors.dueDate}</p>}
           </div>
         </div>
 
-        <div className="border-t-2 border-slate-200 pt-6"></div>
+        <div className="border-t border-slate-200 pt-6 mb-6"></div>
         {/* Parámetros de Riesgo y Operación */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -146,7 +162,7 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               <option value={EconomicSector.TECHNOLOGY}>Tecnología</option>
               <option value={EconomicSector.OTHER}>Otro</option>
             </select>
-            <p className="text-xs text-slate-600 mt-1 italic">
+            <p className="text-xs text-slate-500 mt-1.5">
               Afecta la tasa base según riesgo sectorial
             </p>
           </div>
@@ -169,7 +185,7 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               <option value={FactoringModality.INTERNATIONAL}>Internacional</option>
               <option value={FactoringModality.RAW_MATERIAL}>Materia Prima</option>
             </select>
-            <p className="text-xs text-slate-600 mt-1 italic">
+            <p className="text-xs text-slate-500 mt-1.5">
               Define quién asume el riesgo y tipo de servicio
             </p>
           </div>
@@ -191,7 +207,7 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               <option value={RiskProfile.D}>D - Regular</option>
               <option value={RiskProfile.E}>E - Alto Riesgo</option>
             </select>
-            <p className="text-xs text-slate-600 mt-1 italic">
+            <p className="text-xs text-slate-500 mt-1.5">
               Evaluación crediticia que ajusta la tasa final
             </p>
           </div>
@@ -215,7 +231,7 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               <option value={CreditRating.B}>B - Alto Riesgo</option>
               <option value={CreditRating.CCC}>CCC - Muy Alto Riesgo</option>
             </select>
-            <p className="text-xs text-slate-600 mt-1 italic">
+            <p className="text-xs text-slate-500 mt-1.5">
               Rating crediticio del sacado (pagador)
             </p>
           </div>
@@ -233,7 +249,7 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               className="input-field"
               placeholder="São Paulo"
             />
-            <p className="text-xs text-slate-600 mt-1 italic">
+            <p className="text-xs text-slate-500 mt-1.5">
               Define la alícuota del ISS (2% a 5%)
             </p>
           </div>
@@ -247,12 +263,12 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               name="taxRegime"
               value={formData.taxRegime}
               onChange={handleInputChange}
-              className="input-field bg-slate-100"
+              className="input-field"
               disabled
             >
               <option value={TaxRegime.LUCRO_REAL}>Lucro Real (Obligatorio)</option>
             </select>
-            <p className="text-xs text-slate-600 mt-1 italic">
+            <p className="text-xs text-slate-500 mt-1.5">
               Régimen obligatorio según Lei 9.718/98 Art. 14
             </p>
           </div>
@@ -267,14 +283,24 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
           className="btn-secondary"
           disabled={isLoading}
         >
-          Limpiar
+          Limpiar Formulario
         </button>
         <button
           type="submit"
           className="btn-primary"
           disabled={isLoading}
         >
-          {isLoading ? 'Calculando...' : 'Simular Factoring'}
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Calculando...
+            </span>
+          ) : (
+            'Simular Operación de Factoring'
+          )}
         </button>
       </div>
     </form>

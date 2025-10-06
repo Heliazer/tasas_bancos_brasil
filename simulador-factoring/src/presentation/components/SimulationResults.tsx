@@ -9,198 +9,418 @@ export function SimulationResults({ results }: SimulationResultsProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="card bg-slate-100 border-2 border-slate-400">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Cálculo de Operación</h2>
-            <p className="text-xs text-slate-600 mt-1">
-              Fecha de simulación: {formatDate(results.simulatedAt)}
-            </p>
+      <div
+        className="rounded-xl p-5"
+        style={{
+          background: 'linear-gradient(145deg, #E8F5E9 0%, #C8E6C9 100%)',
+          border: '2px solid rgba(0, 156, 79, 0.3)',
+          boxShadow: '0 8px 20px rgba(0, 156, 79, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+        }}
+      >
+        <div className="flex justify-between items-start">
+          <div className="flex items-center gap-3">
+            <div
+              className="rounded-lg p-2"
+              style={{
+                background: 'linear-gradient(135deg, #006B3D 0%, #009C4F 100%)',
+                boxShadow: '0 4px 12px rgba(0, 107, 61, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+              }}
+            >
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-base font-bold" style={{ color: '#006B3D' }}>Simulação Concluída</h2>
+              <p className="text-xs mt-0.5" style={{ color: '#1A5C42' }}>
+                {formatDate(results.simulatedAt)}
+              </p>
+            </div>
           </div>
           <div className="text-right">
-            <p className="text-xs text-slate-600 font-mono">N° {results.duplicataNumber}</p>
+            <p className="text-xs mb-1" style={{ color: '#546E7A' }}>N° de Operação</p>
+            <p className="text-sm font-mono font-bold" style={{ color: '#2C3E50' }}>{results.duplicataNumber}</p>
           </div>
         </div>
       </div>
 
       {/* Información de la Duplicata */}
       <div className="card">
-        <h3 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b-2 border-slate-800 pb-2">Datos de la Duplicata</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-xs text-slate-600 uppercase tracking-wide font-bold mb-1">Número de Duplicata</p>
-            <p className="text-base font-mono font-semibold text-slate-900">{results.duplicataNumber}</p>
+        <div className="flex items-center gap-2 mb-5">
+          <div
+            className="rounded-lg p-1.5"
+            style={{
+              background: 'linear-gradient(135deg, #002776 0%, #003893 100%)',
+              boxShadow: '0 3px 8px rgba(0, 39, 118, 0.3)',
+            }}
+          >
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
           </div>
-          <div>
-            <p className="text-xs text-slate-600 uppercase tracking-wide font-bold mb-1">Valor Nominal</p>
-            <p className="text-base font-mono font-semibold text-slate-900">{formatCurrency(results.faceValue)}</p>
+          <h3 className="text-lg font-bold" style={{ color: '#2C3E50' }}>Dados da Duplicata</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+            <p className="text-xs font-semibold text-slate-600 mb-2">Número de Duplicata</p>
+            <p className="text-lg font-mono font-bold text-slate-900">{results.duplicataNumber}</p>
           </div>
-          <div>
-            <p className="text-xs text-slate-600 uppercase tracking-wide font-bold mb-1">Fecha de Vencimiento</p>
-            <p className="text-base font-mono font-semibold text-slate-900">{formatDate(results.dueDate)}</p>
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+            <p className="text-xs font-semibold text-slate-600 mb-2">Valor Nominal</p>
+            <p className="text-lg font-mono font-bold text-emerald-700">{formatCurrency(results.faceValue)}</p>
           </div>
-          <div>
-            <p className="text-xs text-slate-600 uppercase tracking-wide font-bold mb-1">Plazo</p>
-            <p className="text-base font-mono font-semibold text-slate-900">{results.daysToMaturity} días ({formatNumber(results.termInMonths, 1)} meses)</p>
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+            <p className="text-xs font-semibold text-slate-600 mb-2">Fecha de Vencimiento</p>
+            <p className="text-base font-mono font-bold text-slate-900">{formatDate(results.dueDate)}</p>
           </div>
-          <div className="md:col-span-2 border-t pt-3 mt-2">
-            <p className="text-xs text-slate-600 uppercase tracking-wide font-bold mb-1">Deudor (Sacado)</p>
-            <p className="text-base font-semibold text-slate-900">{results.debtorName}</p>
-            <p className="text-xs text-slate-500 font-mono">{results.debtorDocument}</p>
+          <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+            <p className="text-xs font-semibold text-slate-600 mb-2">Plazo</p>
+            <p className="text-base font-mono font-bold text-slate-900">{results.daysToMaturity} días <span className="text-sm text-slate-600">({formatNumber(results.termInMonths, 1)} meses)</span></p>
+          </div>
+          <div className="md:col-span-2 bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <p className="text-xs font-semibold text-slate-700 mb-2">Deudor (Sacado)</p>
+            <p className="text-base font-bold text-slate-900">{results.debtorName}</p>
+            <p className="text-sm text-slate-600 font-mono mt-1">{results.debtorDocument}</p>
           </div>
         </div>
       </div>
 
       {/* Cálculo de Tasa */}
       <div className="card">
-        <h3 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b-2 border-slate-800 pb-2">Cálculo de Tasa de Factoring</h3>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-            <span className="text-slate-700">Tasa Base Mensual</span>
-            <span className="font-mono font-semibold">{formatPercentage(results.rateCalculation.baseMonthlyRate)}</span>
+        <div className="flex items-center gap-2 mb-5">
+          <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          <h3 className="text-lg font-bold text-slate-900">Cálculo de Tasa de Factoring</h3>
+        </div>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center py-2.5 px-4 bg-slate-50 rounded-lg">
+            <span className="text-sm font-medium text-slate-700">Tasa Base Mensual</span>
+            <span className="font-mono font-bold text-base text-slate-900">{formatPercentage(results.rateCalculation.baseMonthlyRate)}</span>
           </div>
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-            <span className="text-slate-700">+ Ajuste por Riesgo</span>
-            <span className="font-mono font-semibold text-red-700">+{formatPercentage(results.rateCalculation.riskAdjustment)}</span>
+          <div className="flex justify-between items-center py-2.5 px-4 bg-red-50 rounded-lg border border-red-100">
+            <span className="text-sm font-medium text-slate-700">+ Ajuste por Riesgo</span>
+            <span className="font-mono font-bold text-base text-red-600">+{formatPercentage(results.rateCalculation.riskAdjustment)}</span>
           </div>
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-            <span className="text-slate-700">+ Ajuste por Modalidad</span>
-            <span className="font-mono font-semibold text-red-700">+{formatPercentage(results.rateCalculation.modalityAdjustment)}</span>
+          <div className="flex justify-between items-center py-2.5 px-4 bg-red-50 rounded-lg border border-red-100">
+            <span className="text-sm font-medium text-slate-700">+ Ajuste por Modalidad</span>
+            <span className="font-mono font-bold text-base text-red-600">+{formatPercentage(results.rateCalculation.modalityAdjustment)}</span>
           </div>
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-            <span className="text-slate-700">- Descuento por Volumen</span>
-            <span className="font-mono font-semibold text-green-700">-{formatPercentage(results.rateCalculation.volumeDiscount)}</span>
+          <div className="flex justify-between items-center py-2.5 px-4 bg-emerald-50 rounded-lg border border-emerald-100">
+            <span className="text-sm font-medium text-slate-700">- Descuento por Volumen</span>
+            <span className="font-mono font-bold text-base text-emerald-600">-{formatPercentage(results.rateCalculation.volumeDiscount)}</span>
           </div>
-          <div className="flex justify-between items-center pt-3 bg-slate-100 -mx-8 px-8 py-3 mt-3">
-            <span className="text-xs font-bold text-slate-800 uppercase tracking-wide">Tasa Mensual Final</span>
-            <span className="text-lg font-mono font-bold text-slate-900">{formatPercentage(results.rateCalculation.finalMonthlyRate)}</span>
-          </div>
-          <div className="flex justify-between items-center pt-2">
-            <span className="text-xs text-slate-600">Tasa Anual Efectiva (TEA)</span>
-            <span className="text-xs font-mono font-semibold text-slate-700">{formatPercentage(results.rateCalculation.effectiveAnnualRate)}</span>
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-5 mt-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-bold text-white">Tasa Mensual Final</span>
+              <span className="text-2xl font-mono font-bold text-white">{formatPercentage(results.rateCalculation.finalMonthlyRate)}</span>
+            </div>
+            <div className="flex justify-between items-center mt-3 pt-3 border-t border-blue-500">
+              <span className="text-xs text-blue-100">Tasa Anual Efectiva (TEA)</span>
+              <span className="text-sm font-mono font-bold text-blue-100">{formatPercentage(results.rateCalculation.effectiveAnnualRate)}</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Deságio */}
-      <div className="card bg-slate-50 border-2 border-slate-400">
-        <h3 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b-2 border-slate-800 pb-2">Cálculo del Deságio</h3>
-        <div className="space-y-3 text-sm">
-          <div className="bg-white p-3 border border-slate-300">
-            <p className="text-xs text-slate-600 mb-2 uppercase tracking-wide font-bold">Fórmula Aplicada</p>
-            <p className="text-slate-700 font-mono text-xs">
-              Deságio = Tasa Mensual × Plazo en Meses
-            </p>
-            <p className="text-slate-900 font-mono text-sm mt-2">
-              {formatPercentage(results.rateCalculation.finalMonthlyRate)} × {formatNumber(results.termInMonths, 1)} = {formatPercentage(results.rateCalculation.desagioPercentage)}
-            </p>
+      <div className="card-elevated bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200">
+        <div className="flex items-center gap-2 mb-5">
+          <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 className="text-lg font-bold text-slate-900">Cálculo del Deságio</h3>
+        </div>
+        <div className="space-y-4">
+          <div className="bg-white rounded-lg p-4 border-2 border-amber-200 shadow-sm">
+            <p className="text-xs font-bold text-amber-700 mb-3 uppercase tracking-wide">Fórmula Aplicada</p>
+            <div className="bg-amber-50 rounded p-3 border border-amber-200">
+              <p className="text-slate-700 font-mono text-sm">
+                Deságio = Tasa Mensual × Plazo en Meses
+              </p>
+            </div>
+            <div className="mt-3 p-3 bg-slate-50 rounded border border-slate-200">
+              <p className="text-slate-900 font-mono text-base font-bold text-center">
+                {formatPercentage(results.rateCalculation.finalMonthlyRate)} × {formatNumber(results.termInMonths, 1)} = {formatPercentage(results.rateCalculation.desagioPercentage)}
+              </p>
+            </div>
           </div>
-          <div className="flex justify-between items-center pt-3 bg-slate-800 text-white -mx-8 px-8 py-4">
-            <span className="text-xs font-bold uppercase tracking-wide">Valor del Deságio</span>
-            <span className="text-2xl font-mono font-bold">{formatCurrency(results.rateCalculation.desagioAmount)}</span>
+          <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 shadow-xl">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-xs font-bold text-blue-300 uppercase tracking-wide mb-1">Valor del Deságio</p>
+                <p className="text-xs text-slate-400">Descuento aplicado a la operación</p>
+              </div>
+              <span className="text-3xl font-mono font-bold text-white">{formatCurrency(results.rateCalculation.desagioAmount)}</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Tributos */}
       <div className="card">
-        <h3 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b-2 border-slate-800 pb-2">Cálculo de Tributos</h3>
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-            <div>
-              <p className="font-semibold text-slate-900 text-xs uppercase tracking-wide">ISS ({formatPercentage(results.taxCalculations.iss.rate)})</p>
-              <p className="text-xs text-slate-600 font-mono">Base: {formatCurrency(results.taxCalculations.iss.taxBase)}</p>
+        <div className="flex items-center gap-2 mb-5">
+          <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z" />
+          </svg>
+          <h3 className="text-lg font-bold text-slate-900">Cálculo de Tributos</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+          <div className="bg-red-50 rounded-lg p-4 border-2 border-red-100">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="font-bold text-slate-900 text-sm">ISS</p>
+                <p className="text-xs text-slate-600">{formatPercentage(results.taxCalculations.iss.rate)}</p>
+              </div>
+              <span className="font-mono font-bold text-base text-red-700">{formatCurrency(results.taxCalculations.iss.amount)}</span>
             </div>
-            <span className="font-mono font-semibold text-red-700">{formatCurrency(results.taxCalculations.iss.amount)}</span>
+            <p className="text-xs text-slate-500 font-mono">Base: {formatCurrency(results.taxCalculations.iss.taxBase)}</p>
           </div>
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-            <div>
-              <p className="font-semibold text-slate-900 text-xs uppercase tracking-wide">PIS ({formatPercentage(results.taxCalculations.pis.rate)})</p>
-              <p className="text-xs text-slate-600 font-mono">Base: {formatCurrency(results.taxCalculations.pis.taxBase)}</p>
+          <div className="bg-red-50 rounded-lg p-4 border-2 border-red-100">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="font-bold text-slate-900 text-sm">PIS</p>
+                <p className="text-xs text-slate-600">{formatPercentage(results.taxCalculations.pis.rate)}</p>
+              </div>
+              <span className="font-mono font-bold text-base text-red-700">{formatCurrency(results.taxCalculations.pis.amount)}</span>
             </div>
-            <span className="font-mono font-semibold text-red-700">{formatCurrency(results.taxCalculations.pis.amount)}</span>
+            <p className="text-xs text-slate-500 font-mono">Base: {formatCurrency(results.taxCalculations.pis.taxBase)}</p>
           </div>
-          <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-            <div>
-              <p className="font-semibold text-slate-900 text-xs uppercase tracking-wide">COFINS ({formatPercentage(results.taxCalculations.cofins.rate)})</p>
-              <p className="text-xs text-slate-600 font-mono">Base: {formatCurrency(results.taxCalculations.cofins.taxBase)}</p>
+          <div className="bg-red-50 rounded-lg p-4 border-2 border-red-100">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="font-bold text-slate-900 text-sm">COFINS</p>
+                <p className="text-xs text-slate-600">{formatPercentage(results.taxCalculations.cofins.rate)}</p>
+              </div>
+              <span className="font-mono font-bold text-base text-red-700">{formatCurrency(results.taxCalculations.cofins.amount)}</span>
             </div>
-            <span className="font-mono font-semibold text-red-700">{formatCurrency(results.taxCalculations.cofins.amount)}</span>
+            <p className="text-xs text-slate-500 font-mono">Base: {formatCurrency(results.taxCalculations.cofins.taxBase)}</p>
           </div>
 
           {results.taxCalculations.irpj && (
-            <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-              <div>
-                <p className="font-semibold text-slate-900 text-xs uppercase tracking-wide">IRPJ ({formatPercentage(results.taxCalculations.irpj.rate)})</p>
-                <p className="text-xs text-slate-600 font-mono">Base: {formatCurrency(results.taxCalculations.irpj.taxBase)}</p>
+            <div className="bg-red-50 rounded-lg p-4 border-2 border-red-100">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <p className="font-bold text-slate-900 text-sm">IRPJ</p>
+                  <p className="text-xs text-slate-600">{formatPercentage(results.taxCalculations.irpj.rate)}</p>
+                </div>
+                <span className="font-mono font-bold text-base text-red-700">{formatCurrency(results.taxCalculations.irpj.amount)}</span>
               </div>
-              <span className="font-mono font-semibold text-red-700">{formatCurrency(results.taxCalculations.irpj.amount)}</span>
+              <p className="text-xs text-slate-500 font-mono">Base: {formatCurrency(results.taxCalculations.irpj.taxBase)}</p>
             </div>
           )}
 
           {results.taxCalculations.csll && (
-            <div className="flex justify-between items-center pb-2 border-b border-slate-200">
-              <div>
-                <p className="font-semibold text-slate-900 text-xs uppercase tracking-wide">CSLL ({formatPercentage(results.taxCalculations.csll.rate)})</p>
-                <p className="text-xs text-slate-600 font-mono">Base: {formatCurrency(results.taxCalculations.csll.taxBase)}</p>
+            <div className="bg-red-50 rounded-lg p-4 border-2 border-red-100">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <p className="font-bold text-slate-900 text-sm">CSLL</p>
+                  <p className="text-xs text-slate-600">{formatPercentage(results.taxCalculations.csll.rate)}</p>
+                </div>
+                <span className="font-mono font-bold text-base text-red-700">{formatCurrency(results.taxCalculations.csll.amount)}</span>
               </div>
-              <span className="font-mono font-semibold text-red-700">{formatCurrency(results.taxCalculations.csll.amount)}</span>
+              <p className="text-xs text-slate-500 font-mono">Base: {formatCurrency(results.taxCalculations.csll.taxBase)}</p>
             </div>
           )}
+        </div>
 
-          <div className="flex justify-between items-center pt-3 bg-slate-100 -mx-8 px-8 py-3 mt-3">
-            <span className="text-xs font-bold text-slate-800 uppercase tracking-wide">Total de Tributos</span>
-            <span className="text-lg font-mono font-bold text-red-800">{formatCurrency(results.taxCalculations.totalTaxAmount)}</span>
-          </div>
-          <div className="text-xs text-slate-600 text-right pt-2">
-            Carga Tributaria Efectiva: {formatPercentage(results.taxCalculations.effectiveTaxRate)}
+        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-xl p-5 shadow-lg">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm font-bold text-white mb-1">Total de Tributos</p>
+              <p className="text-xs text-red-100">Carga Tributaria: {formatPercentage(results.taxCalculations.effectiveTaxRate)}</p>
+            </div>
+            <span className="text-2xl font-mono font-bold text-white">{formatCurrency(results.taxCalculations.totalTaxAmount)}</span>
           </div>
         </div>
       </div>
 
-      {/* Valor Neto - Destacado */}
-      <div className="card bg-slate-800 text-white border-4 border-double border-slate-900">
-        <h3 className="text-sm font-bold mb-4 uppercase tracking-wide border-b-2 border-white pb-2">Cálculo del Valor Neto a Recibir</h3>
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between items-center text-slate-100">
-            <span>Valor Nominal de la Duplicata</span>
-            <span className="font-mono font-semibold">{formatCurrency(results.netCalculation.duplicataFaceValue)}</span>
-          </div>
-          <div className="flex justify-between items-center text-slate-100">
-            <span>(-) Deságio</span>
-            <span className="font-mono font-semibold text-red-300">{formatCurrency(results.netCalculation.totalDesagio)}</span>
-          </div>
-          <div className="flex justify-between items-center text-slate-100">
-            <span>(-) Tributos</span>
-            <span className="font-mono font-semibold text-red-300">{formatCurrency(results.netCalculation.totalTaxes)}</span>
-          </div>
-          <div className="border-t-4 border-double border-white pt-4 mt-4">
-            <div className="flex justify-between items-center bg-white text-slate-900 -mx-8 px-8 py-4">
-              <span className="text-lg font-bold uppercase tracking-wide">Valor a Recibir</span>
-              <span className="text-3xl font-mono font-bold">{formatCurrency(results.netCalculation.netAmount)}</span>
+      {/* Valor Neto - Destacado con colores de Brasil */}
+      <div
+        className="rounded-2xl text-white border-0 relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #006B3D 0%, #009C4F 50%, #00A859 100%)',
+          boxShadow: '0 20px 60px rgba(0, 107, 61, 0.5), 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2)',
+        }}
+      >
+        {/* Accent stripe top - Yellow */}
+        <div
+          className="absolute top-0 left-0 right-0 h-1.5"
+          style={{
+            background: 'linear-gradient(90deg, #D4A017 0%, #FFDF00 50%, #D4A017 100%)',
+            boxShadow: '0 2px 8px rgba(212, 160, 23, 0.5)'
+          }}
+        />
+
+        <div className="p-8 pt-10 relative">
+          <div className="flex items-center gap-3 mb-6">
+            <div
+              className="rounded-xl p-2.5 relative"
+              style={{
+                background: 'rgba(255, 255, 255, 0.25)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+              }}
+            >
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
-            <p className="text-right text-slate-300 mt-3 text-xs">
-              Descuento Efectivo Total: {formatPercentage(results.netCalculation.effectiveDiscount)}
+            <div>
+              <h3 className="text-2xl font-bold" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)' }}>Valor Líquido a Receber</h3>
+              <p className="text-sm font-medium" style={{ color: '#F4E4A3' }}>Cálculo final da operação</p>
+            </div>
+          </div>
+
+          <div className="space-y-3 mb-6">
+            <div
+              className="flex justify-between items-center py-3 px-5 rounded-lg"
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <span className="text-sm font-semibold">Valor Nominal da Duplicata</span>
+              <span className="font-mono font-bold text-lg">{formatCurrency(results.netCalculation.duplicataFaceValue)}</span>
+            </div>
+            <div
+              className="flex justify-between items-center py-3 px-5 rounded-lg"
+              style={{
+                background: 'rgba(198, 40, 40, 0.25)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              }}
+            >
+              <span className="text-sm font-semibold">(-) Deságio</span>
+              <span className="font-mono font-bold text-lg" style={{ color: '#FFE0E0' }}>-{formatCurrency(results.netCalculation.totalDesagio)}</span>
+            </div>
+            <div
+              className="flex justify-between items-center py-3 px-5 rounded-lg"
+              style={{
+                background: 'rgba(198, 40, 40, 0.25)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              }}
+            >
+              <span className="text-sm font-semibold">(-) Tributos</span>
+              <span className="font-mono font-bold text-lg" style={{ color: '#FFE0E0' }}>-{formatCurrency(results.netCalculation.totalTaxes)}</span>
+            </div>
+          </div>
+
+          <div
+            className="rounded-2xl p-7 relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(145deg, #FFFFFF 0%, #F8F9FA 100%)',
+              boxShadow: '0 12px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
+              border: '2px solid rgba(212, 160, 23, 0.4)',
+            }}
+          >
+            {/* Blue accent stripe */}
+            <div
+              className="absolute top-0 left-0 right-0 h-1"
+              style={{
+                background: 'linear-gradient(90deg, #002776 0%, #003893 50%, #002776 100%)',
+              }}
+            />
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: '#D4A017' }}>Valor a Receber</p>
+                <p className="text-xs" style={{ color: '#546E7A' }}>Desconto Total: {formatPercentage(results.netCalculation.effectiveDiscount)}</p>
+              </div>
+              <div className="text-right">
+                <span className="text-4xl font-mono font-bold" style={{ color: '#006B3D', textShadow: '0 2px 4px rgba(0, 107, 61, 0.2)' }}>
+                  {formatCurrency(results.netCalculation.netAmount)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Resumen - Brazilian Colors */}
+      <div
+        className="rounded-xl p-6"
+        style={{
+          background: 'linear-gradient(145deg, #F8F9FA 0%, #ECEFF1 100%)',
+          border: '2px solid rgba(0, 156, 79, 0.2)',
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+        }}
+      >
+        <div className="flex items-center gap-2 mb-6">
+          <div
+            className="rounded-lg p-1.5"
+            style={{
+              background: 'linear-gradient(135deg, #D4A017 0%, #FFDF00 100%)',
+              boxShadow: '0 3px 8px rgba(212, 160, 23, 0.4)',
+            }}
+          >
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-bold" style={{ color: '#2C3E50' }}>Resumo da Operação</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* Verde - Valor a Receber */}
+          <div
+            className="rounded-xl p-5 text-white relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, #006B3D 0%, #009C4F 100%)',
+              boxShadow: '0 8px 20px rgba(0, 107, 61, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-bold uppercase tracking-wide">Valor a Receber</p>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <p className="text-3xl font-mono font-bold" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)' }}>
+              {formatCurrency(results.netCalculation.netAmount)}
             </p>
           </div>
-        </div>
-      </div>
 
-      {/* Resumen */}
-      <div className="card bg-slate-50 border-2 border-slate-300">
-        <h3 className="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b-2 border-slate-800 pb-2">Resumen de la Operación</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-white border border-slate-300">
-            <p className="text-xs text-slate-600 mb-2 uppercase tracking-wide font-bold">Valor a Recibir</p>
-            <p className="text-2xl font-mono font-bold text-green-700">{formatCurrency(results.netCalculation.netAmount)}</p>
+          {/* Amarelo - Custo Total */}
+          <div
+            className="rounded-xl p-5 relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, #D4A017 0%, #FFDF00 100%)',
+              boxShadow: '0 8px 20px rgba(212, 160, 23, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+              color: '#2C3E50',
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-bold uppercase tracking-wide">Custo Total</p>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="text-3xl font-mono font-bold" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.15)' }}>
+              {formatCurrency(results.netCalculation.totalDesagio + results.netCalculation.totalTaxes)}
+            </p>
           </div>
-          <div className="text-center p-4 bg-white border border-slate-300">
-            <p className="text-xs text-slate-600 mb-2 uppercase tracking-wide font-bold">Costo Total</p>
-            <p className="text-2xl font-mono font-bold text-red-700">{formatCurrency(results.netCalculation.totalDesagio + results.netCalculation.totalTaxes)}</p>
-          </div>
-          <div className="text-center p-4 bg-white border border-slate-300">
-            <p className="text-xs text-slate-600 mb-2 uppercase tracking-wide font-bold">Anticipación</p>
-            <p className="text-2xl font-mono font-bold text-slate-800">{results.daysToMaturity} días</p>
+
+          {/* Azul - Antecipação */}
+          <div
+            className="rounded-xl p-5 text-white relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, #002776 0%, #003893 100%)',
+              boxShadow: '0 8px 20px rgba(0, 39, 118, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-bold uppercase tracking-wide">Antecipação</p>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="text-3xl font-mono font-bold" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)' }}>
+              {results.daysToMaturity} dias
+            </p>
+            <p className="text-xs mt-1 opacity-90">{formatNumber(results.termInMonths, 1)} meses</p>
           </div>
         </div>
       </div>
