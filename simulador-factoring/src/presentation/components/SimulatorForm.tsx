@@ -79,28 +79,28 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Parámetros de la Operación */}
       <div className="card-elevated">
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
           <div
-            className="rounded-lg p-2"
+            className="rounded-lg p-1.5 md:p-2 flex-shrink-0"
             style={{
               background: 'linear-gradient(135deg, #D4A017 0%, #FFDF00 100%)',
               boxShadow: '0 4px 12px rgba(212, 160, 23, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
             }}
           >
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}>
+            <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))' }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <div>
-            <h2 className="text-xl font-bold" style={{ color: '#2C3E50' }}>Parâmetros da Simulação</h2>
-            <p className="text-sm" style={{ color: '#546E7A' }}>Configure os detalhes da operação de factoring</p>
+          <div className="min-w-0">
+            <h2 className="text-base md:text-xl font-bold truncate" style={{ color: '#2C3E50' }}>Parâmetros da Simulação</h2>
+            <p className="text-xs md:text-sm" style={{ color: '#546E7A' }}>Configure os detalhes da operação de factoring</p>
           </div>
         </div>
 
         {/* Valor y Plazo */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
           <div>
-            <label htmlFor="faceValue" className="label">
+            <label htmlFor="faceValue" className="label text-xs md:text-sm">
               Valor Nominal (R$) *
             </label>
             <input
@@ -109,19 +109,19 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               name="faceValue"
               value={formData.faceValue || ''}
               onChange={handleNumberChange}
-              className="input-field"
+              className="input-field text-base md:text-sm"
               placeholder="100000.00"
               step="0.01"
               min="0"
             />
-            <p className="text-xs text-slate-500 mt-1.5">
+            <p className="text-xs text-slate-500 mt-1">
               Monto total de la duplicata a factorizar
             </p>
             {errors.faceValue && <p className="error-text">{errors.faceValue}</p>}
           </div>
 
           <div>
-            <label htmlFor="dueDate" className="label">
+            <label htmlFor="dueDate" className="label text-xs md:text-sm">
               Fecha de Vencimiento *
             </label>
             <input
@@ -130,9 +130,9 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
               name="dueDate"
               value={formData.dueDate}
               onChange={handleInputChange}
-              className="input-field"
+              className="input-field text-base md:text-sm"
             />
-            <p className="text-xs text-slate-500 mt-1.5">
+            <p className="text-xs text-slate-500 mt-1">
               Define el plazo de la operación (en días)
             </p>
             {errors.dueDate && <p className="error-text">{errors.dueDate}</p>}
@@ -140,158 +140,71 @@ export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProp
         </div>
 
         <div className="border-t border-slate-200 pt-6 mb-6"></div>
-        {/* Parámetros de Riesgo y Operación */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="economicSector" className="label">
-              Sector Económico *
-            </label>
-            <select
-              id="economicSector"
-              name="economicSector"
-              value={formData.economicSector}
-              onChange={handleInputChange}
-              className="input-field"
-            >
-              <option value={EconomicSector.RETAIL}>Comercio Minorista</option>
-              <option value={EconomicSector.SERVICES}>Servicios</option>
-              <option value={EconomicSector.INDUSTRY}>Industria</option>
-              <option value={EconomicSector.CONSTRUCTION}>Construcción</option>
-              <option value={EconomicSector.HEALTHCARE}>Salud</option>
-              <option value={EconomicSector.AGRICULTURE}>Agricultura</option>
-              <option value={EconomicSector.TECHNOLOGY}>Tecnología</option>
-              <option value={EconomicSector.OTHER}>Otro</option>
-            </select>
-            <p className="text-xs text-slate-500 mt-1.5">
-              Afecta la tasa base según riesgo sectorial
-            </p>
+
+        {/* Parámetros de Simulación - Información Estática */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 md:p-6 border-2 border-blue-200">
+          <div className="flex items-center gap-2 mb-4">
+            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 className="text-sm md:text-base font-bold text-blue-900">Parámetros de esta Simulación</h3>
           </div>
 
-          <div>
-            <label htmlFor="modality" className="label">
-              Modalidad de Factoring *
-            </label>
-            <select
-              id="modality"
-              name="modality"
-              value={formData.modality}
-              onChange={handleInputChange}
-              className="input-field"
-            >
-              <option value={FactoringModality.WITH_RECOURSE}>Con Regreso (Convencional)</option>
-              <option value={FactoringModality.WITHOUT_RECOURSE}>Sin Regreso (Convencional)</option>
-              <option value={FactoringModality.MATURITY}>Maturity (Sin Adelanto)</option>
-              <option value={FactoringModality.TRUSTEE}>Trustee (Administración Integral)</option>
-              <option value={FactoringModality.INTERNATIONAL}>Internacional</option>
-              <option value={FactoringModality.RAW_MATERIAL}>Materia Prima</option>
-            </select>
-            <p className="text-xs text-slate-500 mt-1.5">
-              Define quién asume el riesgo y tipo de servicio
-            </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 text-xs md:text-sm">
+            <div className="bg-white/70 rounded-lg p-3">
+              <p className="text-gray-600 font-medium mb-1">Sector Económico</p>
+              <p className="text-gray-900 font-semibold">Servicios</p>
+            </div>
+
+            <div className="bg-white/70 rounded-lg p-3">
+              <p className="text-gray-600 font-medium mb-1">Modalidad de Factoring</p>
+              <p className="text-gray-900 font-semibold">Con Regreso (Convencional)</p>
+            </div>
+
+            <div className="bg-white/70 rounded-lg p-3">
+              <p className="text-gray-600 font-medium mb-1">Perfil de Riesgo del Cliente</p>
+              <p className="text-gray-900 font-semibold">B - Muy Bueno</p>
+            </div>
+
+            <div className="bg-white/70 rounded-lg p-3">
+              <p className="text-gray-600 font-medium mb-1">Calificación del Deudor</p>
+              <p className="text-gray-900 font-semibold">A - Bueno</p>
+            </div>
+
+            <div className="bg-white/70 rounded-lg p-3">
+              <p className="text-gray-600 font-medium mb-1">Municipio</p>
+              <p className="text-gray-900 font-semibold">São Paulo</p>
+            </div>
+
+            <div className="bg-white/70 rounded-lg p-3">
+              <p className="text-gray-600 font-medium mb-1">Régimen Tributario</p>
+              <p className="text-gray-900 font-semibold">Lucro Real (Obligatorio)</p>
+            </div>
           </div>
 
-          <div>
-            <label htmlFor="clientRiskProfile" className="label">
-              Perfil de Riesgo del Cliente *
-            </label>
-            <select
-              id="clientRiskProfile"
-              name="clientRiskProfile"
-              value={formData.clientRiskProfile}
-              onChange={handleInputChange}
-              className="input-field"
-            >
-              <option value={RiskProfile.A}>A - Excelente</option>
-              <option value={RiskProfile.B}>B - Muy Bueno</option>
-              <option value={RiskProfile.C}>C - Bueno</option>
-              <option value={RiskProfile.D}>D - Regular</option>
-              <option value={RiskProfile.E}>E - Alto Riesgo</option>
-            </select>
-            <p className="text-xs text-slate-500 mt-1.5">
-              Evaluación crediticia que ajusta la tasa final
-            </p>
-          </div>
-
-          <div>
-            <label htmlFor="debtorCreditRating" className="label">
-              Calificación del Deudor *
-            </label>
-            <select
-              id="debtorCreditRating"
-              name="debtorCreditRating"
-              value={formData.debtorCreditRating}
-              onChange={handleInputChange}
-              className="input-field"
-            >
-              <option value={CreditRating.AAA}>AAA - Excelente</option>
-              <option value={CreditRating.AA}>AA - Muy Bueno</option>
-              <option value={CreditRating.A}>A - Bueno</option>
-              <option value={CreditRating.BBB}>BBB - Regular</option>
-              <option value={CreditRating.BB}>BB - Moderado</option>
-              <option value={CreditRating.B}>B - Alto Riesgo</option>
-              <option value={CreditRating.CCC}>CCC - Muy Alto Riesgo</option>
-            </select>
-            <p className="text-xs text-slate-500 mt-1.5">
-              Rating crediticio del sacado (pagador)
-            </p>
-          </div>
-
-          <div>
-            <label htmlFor="municipalityName" className="label">
-              Municipio *
-            </label>
-            <input
-              type="text"
-              id="municipalityName"
-              name="municipalityName"
-              value={formData.municipalityName}
-              onChange={handleInputChange}
-              className="input-field"
-              placeholder="São Paulo"
-            />
-            <p className="text-xs text-slate-500 mt-1.5">
-              Define la alícuota del ISS (2% a 5%)
-            </p>
-          </div>
-
-          <div>
-            <label htmlFor="taxRegime" className="label">
-              Régimen Tributario
-            </label>
-            <select
-              id="taxRegime"
-              name="taxRegime"
-              value={formData.taxRegime}
-              onChange={handleInputChange}
-              className="input-field"
-              disabled
-            >
-              <option value={TaxRegime.LUCRO_REAL}>Lucro Real (Obligatorio)</option>
-            </select>
-            <p className="text-xs text-slate-500 mt-1.5">
-              Régimen obligatorio según Lei 9.718/98 Art. 14
-            </p>
-          </div>
+          <p className="text-xs text-blue-700 mt-4 italic">
+            Estos parámetros se utilizarán para calcular la tasa de factoring aplicable a tu operación.
+          </p>
         </div>
       </div>
 
       {/* Submit Button */}
-      <div className="flex justify-end gap-4">
+      <div className="flex flex-col sm:flex-row justify-end gap-3 md:gap-4">
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="btn-secondary"
+          className="btn-secondary w-full sm:w-auto order-2 sm:order-1"
           disabled={isLoading}
         >
           Limpiar Formulario
         </button>
         <button
           type="submit"
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto order-1 sm:order-2"
           disabled={isLoading}
         >
           {isLoading ? (
-            <span className="flex items-center gap-2">
+            <span className="flex items-center justify-center gap-2">
               <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

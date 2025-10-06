@@ -43,12 +43,19 @@ body {
 }
 
 .input-field {
-  @apply w-full px-4 py-3 rounded-lg outline-none transition-all text-sm;
+  @apply w-full px-3 py-2.5 md:px-4 md:py-3 rounded-lg outline-none transition-all;
   font-family: inherit;
+  font-size: 16px; /* Prevents zoom on iOS */
   background: #FFF9E0;
   border: 2px solid #D4A017;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   color: #2C3E50;
+}
+
+@media (min-width: 768px) {
+  .input-field {
+    font-size: 0.875rem;
+  }
 }
 
 .input-field:hover {
@@ -75,12 +82,19 @@ body {
 }
 
 .btn-primary {
-  @apply font-semibold py-3 px-8 rounded-lg transition-all border-0 focus:outline-none text-sm;
+  @apply font-semibold py-3 px-6 md:px-8 rounded-lg transition-all border-0 focus:outline-none;
+  font-size: 0.9375rem; /* 15px - balance between mobile readability and desktop appearance */
   background: linear-gradient(135deg, var(--br-green-dark) 0%, var(--br-green) 100%);
   color: white;
   box-shadow: var(--shadow-3d);
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .btn-primary {
+    font-size: 0.875rem;
+  }
 }
 
 .btn-primary:hover {
@@ -101,11 +115,18 @@ body {
 }
 
 .btn-secondary {
-  @apply font-semibold py-3 px-6 rounded-lg transition-all text-sm;
+  @apply font-semibold py-3 px-5 md:px-6 rounded-lg transition-all;
+  font-size: 0.9375rem;
   background: var(--br-white);
   color: var(--br-gray-dark);
   border: 2px solid #B0BEC5;
   box-shadow: var(--shadow-soft);
+}
+
+@media (min-width: 768px) {
+  .btn-secondary {
+    font-size: 0.875rem;
+  }
 }
 
 .btn-secondary:hover {
@@ -122,7 +143,7 @@ body {
 }
 
 .card-elevated {
-  @apply rounded-xl p-8;
+  @apply rounded-xl p-4 md:p-6 lg:p-8;
   background: linear-gradient(145deg, #FFFEF8 0%, #FFF9E6 100%);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
   border: 2px solid rgba(212, 160, 23, 0.2);
