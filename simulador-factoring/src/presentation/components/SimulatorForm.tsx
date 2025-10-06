@@ -12,11 +12,19 @@ interface SimulatorFormProps {
 }
 
 export function SimulatorForm({ onSubmit, isLoading = false }: SimulatorFormProps) {
+  // Calcular fecha de vencimiento a 30 días desde hoy
+  const getDefaultDueDate = () => {
+    const today = new Date();
+    const dueDate = new Date(today);
+    dueDate.setDate(today.getDate() + 30);
+    return dueDate.toISOString().split('T')[0];
+  };
+
   const [formData, setFormData] = useState<SimulationInputDTO>({
     duplicataNumber: 'SIM-' + Date.now(),
     issueDate: new Date().toISOString().split('T')[0],
-    dueDate: '',
-    faceValue: 0,
+    dueDate: getDefaultDueDate(),
+    faceValue: 250000,
     debtorName: 'Simulación',
     debtorDocument: '',
     debtorCreditRating: CreditRating.A,
