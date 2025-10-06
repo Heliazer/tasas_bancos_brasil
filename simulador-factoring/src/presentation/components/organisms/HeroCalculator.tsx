@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useInvestmentCalculator } from '../../hooks/useInvestmentCalculator';
+import { useSimulation } from '../../../context/SimulationContext';
 import { Card } from '../atoms/Card';
 import { Slider } from '../atoms/Slider';
 import { Toggle } from '../atoms/Toggle';
@@ -15,6 +17,40 @@ import { INVESTMENT_LIMITS, MARKETING_COPY } from '../../../utils/constants';
 export function HeroCalculator() {
   const { amount, months, autoReinvest, result, setAmount, setMonths, toggleAutoReinvest } =
     useInvestmentCalculator();
+  const { setSimulationData } = useSimulation();
+  const navigate = useNavigate();
+
+  const handleViewReport = () => {
+    // Guardar datos de simulación en el context
+    setSimulationData({
+      amount,
+      months,
+      autoReinvest,
+      finalAmount: result.finalAmount,
+      totalGain: result.totalGain,
+      roiPercentage: result.roiPercentage,
+      monthlyAverage: result.monthlyAverage,
+      effectiveRate: result.effectiveRate
+    });
+    // Navegar a la página de informe
+    navigate('/informe');
+  };
+
+  const handleViewFinancieraReport = () => {
+    // Guardar datos de simulación en el context
+    setSimulationData({
+      amount,
+      months,
+      autoReinvest,
+      finalAmount: result.finalAmount,
+      totalGain: result.totalGain,
+      roiPercentage: result.roiPercentage,
+      monthlyAverage: result.monthlyAverage,
+      effectiveRate: result.effectiveRate
+    });
+    // Navegar a la página de informe de la financiera
+    navigate('/informe-financiera');
+  };
 
   return (
     <section className="w-full max-w-6xl mx-auto px-4 py-12 md:py-20">
@@ -125,10 +161,24 @@ export function HeroCalculator() {
                   </div>
                 </div>
 
-                <div className="pt-6">
+                <div className="pt-6 space-y-3">
                   <Button size="lg" fullWidth>
                     {MARKETING_COPY.CTA_PRIMARY}
                   </Button>
+
+                  <button
+                    onClick={handleViewReport}
+                    className="w-full px-4 py-2 bg-white border-2 border-green-600 text-green-700 hover:bg-green-50 transition-colors font-semibold text-sm"
+                  >
+                    📄 Ver Informe Detallado
+                  </button>
+
+                  <button
+                    onClick={handleViewFinancieraReport}
+                    className="w-full px-4 py-2 bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50 transition-colors font-semibold text-sm"
+                  >
+                    📊 Informe Contable (Financiera)
+                  </button>
                 </div>
 
                 <p className="text-xs text-gray-500">
