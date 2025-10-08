@@ -1,0 +1,29 @@
+{
+  "name": "vps-config-module",
+  "version": "1.0.0",
+  "description": "Módulo reutilizable para configuración y deploy de VPS con Nginx",
+  "type": "module",
+  "main": "vps.config.js",
+  "types": "vps.config.ts",
+  "scripts": {
+    "deploy": "tsx deploy.ts",
+    "deploy:verbose": "tsx deploy.ts --verbose",
+    "setup": "bash setup-vps.sh",
+    "generate-nginx": "tsx -e \"import {generateNginxConfig, loadNginxConfigFromEnv} from './vps.config.js'; console.log(generateNginxConfig(loadNginxConfigFromEnv()));\""
+  },
+  "keywords": [
+    "vps",
+    "nginx",
+    "deploy",
+    "deployment",
+    "server",
+    "hosting"
+  ],
+  "author": "Heliazer",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}
